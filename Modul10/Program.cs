@@ -22,7 +22,6 @@ namespace Modul10
             Console.ReadKey();
         }
 
-
     }
 
     public interface ILogger
