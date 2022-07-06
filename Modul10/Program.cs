@@ -9,96 +9,108 @@ namespace Modul10
 
         static void Main(string[] args)
         {
+            double number1;
+            double number2;
+            double summa;
+            ISumma Summa = new Summa();
             Logger = new Logger();
-            var worker1 = new Worker1(Logger);
-            var worker2 = new Worker2(Logger);
-            var worker3 = new Worker3(Logger);
+            var inputDecimal = new InputDecimal(Logger);
 
-            worker1.Wokr();
-            worker2.Wokr();
-            worker3.Wokr();
+            //  ввод первого числа
+            //lbh = inputDecimal.
+            if (inputDecimal.InputDecimalWithCheck(out number1))
+            {
+                Console.ReadKey();
+                return;
+            }
 
+            //  ввод второго числа
+            if (inputDecimal.InputDecimalWithCheck(out number2))
+            {
+                Console.ReadKey();
+                return;
+            }
+
+            //  расчёт суммы 
+            summa = Summa.Summa(number1, number2);
+
+            Console.WriteLine($"Сумма введённых чисел = {summa}");
 
             Console.ReadKey();
         }
 
     }
 
+    // Интерфейс логера
     public interface ILogger
     {
         void Event(string message);
         void Error(string message);
     }
 
+    // Реализация логера
     public class Logger : ILogger
     {
         public void Error(string message)
         {
-            Console.WriteLine(message); 
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message+"\n");
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         public void Event(string message)
         {
-            //Console.BackgroundColor = ConsoleColor.Red;
-            //Console.ForegroundColor = ConsoleColor.Black;
-            // Можно воткнуть отправку в поток, почту или кудысь нужно.
-            Console.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine(message+"\n");
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 
-    public interface IWorker
-    {
-        void Wokr();
-    }
-
-    public class Worker1 : IWorker
+    // Реализация воода числа  , с проверкой на оишбку, с записью в лог. В кастве носителя лога - консоль
+    public class InputDecimal
     {
         ILogger Logger { get; }
 
-        public Worker1(ILogger logger)
+        public InputDecimal(ILogger logger)
         {
             Logger = logger;
         }
 
-        public void Wokr()
+        public bool InputDecimalWithCheck(out double aInput)
         {
-            Logger.Event("Worker 1 начал свою работу");
-            Thread.Sleep(1000);
-            Logger.Event("Worker 1 завершил свою работу");
+            Logger.Event(" Событие - Ввод значения ");
+            Console.WriteLine("Введите число:");
+            try
+            {
+                //aInput = Convert.ToDouble(Console.ReadLine());
+                aInput = double.Parse((Console.ReadLine()));
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex.Message);
+                aInput = 0; 
+                return true;
+            }
+
+            return false;
+
         }
+
     }
 
-    public class Worker2 : IWorker
+    // Интерфейс сложения
+    interface ISumma
     {
-        ILogger Logger { get; }
-
-        public Worker2(ILogger logger)
-        {
-            Logger = logger;
-        }
-
-        public void Wokr()
-        {
-            Logger.Event("Worker 2 начал свою работу");
-            Thread.Sleep(1000);
-            Logger.Event("Worker 2 завершил свою работу");
-        }
+        double Summa(double a1, double a2);
     }
 
-    public class Worker3 : IWorker
+    // Реализация сложения
+    public class Summa : ISumma
     {
-        ILogger Logger { get; }
 
-        public Worker3(ILogger logger)
+        double ISumma.Summa(double a1, double a2)
         {
-            Logger = logger;
-        }
-
-        public void Wokr()
-        {
-            Logger.Event("Worker 3 начал свою работу");
-            Thread.Sleep(1000);
-            Logger.Event("Worker 3 завершил свою работу");
+            return a1 + a2;
         }
     }
 
